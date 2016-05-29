@@ -3,18 +3,32 @@ var querystring = require("querystring");
 var https = require("https");
 var host = 'api.havenondemand.com';
 
+var express = require('express');
+var app = express();
+var bodyParser = require('body-parser');
+var http = require('http');
+var concat = require('concat-stream');
+
+app.set('port', process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 8081);
+app.set('ip', process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1");
+
+
+http.createServer(app).listen(app.get('port') ,app.get('ip'), function () {
+    console.log("✔ Express server listening at %s:%d ", app.get('ip'),app.get('port'));    
+});
+
+
+
 var current_JOBID = "";
 var jobPath = "https://api.havenondemand.com/1/job/result/";
 var api_key = "apikey=53656730-a649-4644-9b95-4d347eb831be";
 var outputValue = ""
 var index = 0;
 
-
-
 var simulationExecution = {
 	//simulation_results : [],
-	readJSONFile : function(){
-		this.input  = fs.readFileSync( "simulation.json", 'utf8');  
+	readJSONFile : function(jsonInput){
+		this.input  = jsonInput;// fs.readFileSync( "simulation.json", 'utf8');  
 		//console.log("Input : " + JSON.stringify(this.input));		
 	},
 	getJobResult : function(jobId,simulationCallback){
@@ -52,6 +66,7 @@ var simulationExecution = {
 	executeSimulation : function() {	
 		//var simulationSteps = JSON.parse(this.input);	
 		console.log("Current index: " + this.index);
+		console.log("Simulation steps: " + this.simulationSteps);
 		if(this.index < this.simulationSteps.length){
 		 	var simulation = this.simulationSteps[this.index];
 		 	simulation.request = this.processRequestParams(simulation.request);	
@@ -64,7 +79,7 @@ var simulationExecution = {
 	},
 	simulationDriver : function(){
 		this.simulation_results = new Array();
-		this.simulationSteps = JSON.parse(this.input);
+		this.simulationSteps = this.input;
 		this.index = 0;
 		this.executeSimulation();
 	},
@@ -160,9 +175,24 @@ function simulationCallback(responseObject){
 	}	
 }
 
+app.use(bodyParser.json());
 
+app.post('/executeSimulation', function (req, response){
+	console.log(req.body);
+	simulationExecution.input = req.body;
+	simulationExecution.simulationDriver();
+	response.send(outputValue);
+	
+});
 
-simulationExecution.readJSONFile();
-simulationExecution.simulationDriver();
+app.get('/getResult',function(req,res){
+	res.send(outputValue);
+})
+
+exports.simulationHandler = function(event, context) {
+ 	//simulationExecution.readJSONFile(event);
+
+	simulationExecution.simulationDriver(); 
+}
 
 //console.log("Input : " + JSON.parse(simulationExecution.input)[0]);

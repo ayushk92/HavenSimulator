@@ -13,7 +13,7 @@
 		"request":{
 			"text" : "content"
 		},
-		"response" : "aggregate"
+		"response" : "actions.result.aggregate"
 	}	
 	
 ]

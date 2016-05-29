@@ -1,12 +1,19 @@
 {
-  "name": "Haven Simulator",
+  "name": "havensimulator",
   "version": "1.0.0",
   "description": "Haven Simulator",
-  
-
-  "dependencies": {
-    
+  "main": "Simulator.js",
+  "files": [
+    "*.js"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "create": "claudia create --name havensimulator --region us-west-1 --handler Simulator.simulationHandler",
+    "deploy": "claudia update"
   },
-  
-  "main": "Simulator.js"
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "claudia-api-builder": "^1.1.0"
+  }
 }
