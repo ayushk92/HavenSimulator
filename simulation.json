@@ -1,0 +1,19 @@
+ [
+	{
+		"simulationId" : 1,
+		"api_url" : "https://api.havenondemand.com/1/api/async/recognizespeech/v1",
+		"request" : {
+			"url" : "http://www.genesys.com/resources/s3/resources/creditcardactivation2.mp3"
+		},
+		"response" : "actions.result.document.content"
+	},
+	{
+		"simulationId" : 2,
+		"api_url" : "https://api.havenondemand.com/1/api/async/analyzesentiment/v1",
+		"request":{
+			"text" : "content"
+		},
+		"response" : "aggregate"
+	}	
+	
+]

@@ -1,0 +1,12 @@
+{
+  "name": "Haven Simulator",
+  "version": "1.0.0",
+  "description": "Haven Simulator",
+  
+
+  "dependencies": {
+    
+  },
+  
+  "main": "Simulator.js"
+}
